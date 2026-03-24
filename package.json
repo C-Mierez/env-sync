@@ -1,0 +1,48 @@
+{
+	"name": "@c-mierez/env-sync",
+	"version": "0.1.0",
+	"description": "Sync and validate env.example/.env from a src/env.ts schema using @t3-oss/env-nextjs and zod",
+	"type": "module",
+	"bin": {
+		"env-sync": "./bin/env-sync.js"
+	},
+	"exports": {
+		".": "./dist/cli.js"
+	},
+	"files": [
+		"bin",
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "bun run tsc -p tsconfig.json",
+		"test": "bun test",
+		"test:watch": "bun test --watch",
+		"sync:cli": "bun run src/cli.ts sync",
+		"check:cli": "bun run src/cli.ts check",
+		"prepare": "bun run build",
+		"prepack": "bun run build",
+		"pack:dry": "npm pack --dry-run"
+	},
+	"dependencies": {
+		"typescript": "^5.8.2"
+	},
+	"devDependencies": {
+		"@types/node": "^24.5.2"
+	},
+	"keywords": [
+		"env",
+		"dotenv",
+		"validation",
+		"zod",
+		"nextjs",
+		"t3-oss"
+	],
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"engines": {
+		"node": ">=20"
+	}
+}
