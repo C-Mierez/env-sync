@@ -32,8 +32,8 @@ bunx env-sync check
 ```json
 {
     "scripts": {
-        "env:sync": "bunx env-sync sync",
-        "env:check": "bunx env-sync check"
+        "env:sync": "bunx --bun env-sync sync",
+        "env:check": "bunx --bun env-sync check"
     }
 }
 ```
@@ -54,9 +54,9 @@ pre-commit:
     parallel: false
     commands:
         env-sync-fix:
-            run: bunx env-sync sync
+            run: bunx --bun env-sync sync
         env-sync-check:
-            run: bunx env-sync check
+            run: bunx --bun env-sync check
 ```
 
 This gives you a pre-commit flow that:
