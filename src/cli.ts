@@ -36,7 +36,8 @@ try {
       break;
     }
     case "check": {
-      const result = runCheck(cwd());
+      const ciMode = process.argv.includes("--ci");
+      const result = runCheck(cwd(), ciMode);
 
       for (const warning of result.warnings) {
         console.warn(`[warn] ${warning}`);
@@ -48,7 +49,8 @@ try {
         }
         process.exitCode = 1;
       } else {
-        console.log("env.example and .env are valid and in sync.");
+        const message = ciMode ? "env.example is valid and in sync." : "env.example and .env are valid and in sync.";
+        console.log(message);
       }
 
       break;
@@ -77,5 +79,5 @@ try {
 }
 
 function printHelp(): void {
-  console.log(`env-sync\n\nUsage:\n  env-sync sync\n  env-sync check\n  env-sync init-workflow\n\nCommands:\n  sync           Regenerate env.example and autofix .env where safe\n  check          Validate env.example/.env against src/env.ts\n  init-workflow  Create .github/workflows/env-sync-check.yml\n`);
+  console.log(`env-sync\n\nUsage:\n  env-sync sync\n  env-sync check [--ci]\n  env-sync init-workflow\n\nCommands:\n  sync           Regenerate env.example and autofix .env where safe\n  check          Validate env.example/.env against src/env.ts (use --ci to skip .env check)\n  init-workflow  Create .github/workflows/env-sync-check.yml\n`);
 }

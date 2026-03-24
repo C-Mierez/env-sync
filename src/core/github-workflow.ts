@@ -23,7 +23,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Validate env sync
-        run: bunx --bun env-sync check
+        run: bunx --bun env-sync check --ci
 `;
 
 export interface GithubWorkflowResult {

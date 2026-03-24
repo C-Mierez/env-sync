@@ -9,7 +9,7 @@ export interface CheckResult {
   warnings: string[];
 }
 
-export function runCheck(cwd: string): CheckResult {
+export function runCheck(cwd: string, ciMode: boolean = false): CheckResult {
   const keys = extractEnvKeys(cwd);
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -23,19 +23,22 @@ export function runCheck(cwd: string): CheckResult {
     errors.push("env.example is out of sync with src/env.ts. Run: env-sync sync");
   }
 
-  const dotEnv = existsSync(dotEnvPath) ? readFileSync(dotEnvPath, "utf8") : "";
-  const dotEnvResult = syncDotenvContent(dotEnv, keys);
+  // Skip .env validation in CI mode since .env is git-ignored
+  if (!ciMode) {
+    const dotEnv = existsSync(dotEnvPath) ? readFileSync(dotEnvPath, "utf8") : "";
+    const dotEnvResult = syncDotenvContent(dotEnv, keys);
 
-  for (const warning of dotEnvResult.warnings) {
-    warnings.push(warning);
-  }
+    for (const warning of dotEnvResult.warnings) {
+      warnings.push(warning);
+    }
 
-  for (const error of dotEnvResult.unresolvedErrors) {
-    errors.push(error);
-  }
+    for (const error of dotEnvResult.unresolvedErrors) {
+      errors.push(error);
+    }
 
-  if (dotEnvResult.hasChanges) {
-    errors.push(".env needs regeneration/normalization. Run: env-sync sync");
+    if (dotEnvResult.hasChanges) {
+      errors.push(".env needs regeneration/normalization. Run: env-sync sync");
+    }
   }
 
   return { errors, warnings };
