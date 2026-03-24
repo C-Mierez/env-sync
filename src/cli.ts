@@ -2,6 +2,7 @@
 import { cwd } from "node:process";
 import { runSync } from "./core/sync.js";
 import { runCheck } from "./core/check.js";
+import { createGithubWorkflow } from "./core/github-workflow.js";
 
 const command = process.argv[2] ?? "--help";
 
@@ -52,6 +53,17 @@ try {
 
       break;
     }
+    case "init-workflow": {
+      const result = createGithubWorkflow(cwd());
+      if (result.created) {
+        console.log("Created GitHub Actions workflow for env sync checks.");
+        console.log(result.workflowPath);
+      } else {
+        console.log("GitHub Actions workflow already exists.");
+        console.log(result.workflowPath);
+      }
+      break;
+    }
     case "--help":
     case "-h":
     default:
@@ -65,5 +77,5 @@ try {
 }
 
 function printHelp(): void {
-  console.log(`env-sync\n\nUsage:\n  env-sync sync\n  env-sync check\n\nCommands:\n  sync   Regenerate env.example and autofix .env where safe\n  check  Validate env.example/.env against src/env.ts\n`);
+  console.log(`env-sync\n\nUsage:\n  env-sync sync\n  env-sync check\n  env-sync init-workflow\n\nCommands:\n  sync           Regenerate env.example and autofix .env where safe\n  check          Validate env.example/.env against src/env.ts\n  init-workflow  Create .github/workflows/env-sync-check.yml\n`);
 }

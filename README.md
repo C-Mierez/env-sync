@@ -25,6 +25,9 @@ bunx env-sync sync
 
 # Validate that both files are in sync and valid
 bunx env-sync check
+
+# Scaffold a GitHub Actions workflow for env sync checks
+bunx env-sync init-workflow
 ```
 
 ## Suggested package scripts in your Next.js app
@@ -64,6 +67,16 @@ This gives you a pre-commit flow that:
 1. Re-generates `env.example`.
 2. Applies safe `.env` autofixes.
 3. Blocks the commit if unresolved validation errors remain.
+
+## GitHub Actions scaffold
+
+Generate a workflow file:
+
+```bash
+bunx --bun env-sync init-workflow
+```
+
+This creates `.github/workflows/env-sync-check.yml` that runs `bunx --bun env-sync check` on pull requests and pushes to `main`.
 
 ## Expected env.ts shape
 

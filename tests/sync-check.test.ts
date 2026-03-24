@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { cpSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { runCheck } from "../src/core/check.js";
 import { runSync } from "../src/core/sync.js";
+import { createGithubWorkflow } from "../src/core/github-workflow.js";
 
 const fixtureRoot = resolve("tests/fixtures/next-app-unsynced");
 const tmpDirs: string[] = [];
@@ -68,5 +69,31 @@ describe("env-sync fixture behavior", () => {
     const result = runCheck(cwd);
 
     expect(result.errors).toEqual([]);
+  });
+
+  it("creates a GitHub Actions workflow scaffold", () => {
+    const cwd = prepareFixtureCopy();
+
+    const result = createGithubWorkflow(cwd);
+    const workflowPath = join(cwd, ".github/workflows/env-sync-check.yml");
+
+    expect(result.created).toBeTrue();
+    expect(result.workflowPath).toBe(workflowPath);
+    expect(existsSync(workflowPath)).toBeTrue();
+
+    const content = readFileSync(workflowPath, "utf8");
+    expect(content).toContain("name: Env Sync Check");
+    expect(content).toContain("run: bunx --bun env-sync check");
+  });
+
+  it("does not overwrite an existing workflow scaffold", () => {
+    const cwd = prepareFixtureCopy();
+
+    const first = createGithubWorkflow(cwd);
+    const second = createGithubWorkflow(cwd);
+
+    expect(first.created).toBeTrue();
+    expect(second.created).toBeFalse();
+    expect(first.workflowPath).toBe(second.workflowPath);
   });
 });
