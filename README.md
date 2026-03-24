@@ -14,7 +14,7 @@ Sync and validate `env.example` and `.env` against schema keys defined in `src/e
 ## Install
 
 ```bash
-bun add -d github:c-mierez/env-sync
+bun add -d github:C-Mierez/env-sync#main
 ```
 
 ## Commands
